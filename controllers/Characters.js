@@ -119,14 +119,14 @@ const getcharacter = async (req = request, res = response) =>{
         conn = await pool.getConnection() //Realizamons la conexion
 
         //Generamos la consulta
-        const users = await conn.query(modelCharacters.queryGetCharacters, (error) => {if (error) throw error})
+        const characters = await conn.query(modelCharacters.queryGetCharacters, (error) => {if (error) throw error})
 
-        if (users.length===0){ //En caso de no haber registros lo informamos
+        if (characters.length===0){ //En caso de no haber registros lo informamos
             res.status(404).json({msg: "No existen personajes registrados"})
             return
         }
 
-        res.json({users}) //Se manda la lista de usuarios
+        res.json({characters}) //Se manda la lista de usuarios
     }
     catch(error){
         console.log(error)
@@ -146,14 +146,14 @@ const getcharacterbyID = async (req = request, res = response) =>{
         conn = await pool.getConnection() //Realizamons la conexion
 
         //Generamos la consulta
-        const [user] = await conn.query(modelCharacters.queryGetCharactersByID, [id], (error) => {if (error) throw error})
+        const [character] = await conn.query(modelCharacters.queryGetCharactersByID, [id], (error) => {if (error) throw error})
 
-        if (!user){ //En caso de no haber registros lo informamos
+        if (!character){ //En caso de no haber registros lo informamos
             res.status(404).json({msg: `No existe personaje registrado con el ID ${id}`})
             return
         }
 
-        res.json({user}) //Se manda la lista de usuarios
+        res.json({character}) //Se manda la lista de usuarios
     }
     catch(error){
         console.log(error)
