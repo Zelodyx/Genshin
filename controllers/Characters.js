@@ -35,14 +35,14 @@ const addcharacter = async (req = request, res = response) =>{
     try{
         conn = await pool.getConnection() //Realizamons la conexion
 
-        const [characterExist] = await conn.query(`SELECT Constellation FROM Characters WHERE Constellation = '${Constellation}' `)
+        const [characterExist] = await conn.query(modelCharacters.querycharacterExist,[Constellation])
 
         if(characterExist){
             res.status(400).json({msg: `El Personaje ${Name} ya se encuntra registrado.`})
             return
         }
         //Generamos la consulta
-        const result = await conn.query(`INSERT INTO Characters(
+        const result = await conn.query(modelCharacters.queryaddcharacter,[
             Name, 
             Gender,
             Rarity,
@@ -52,20 +52,7 @@ const addcharacter = async (req = request, res = response) =>{
             Birthday,
             Region,
             Constellation,
-            Active) 
-        VALUES(
-            '${Name}', 
-            '${Gender}',
-            ${Rarity},
-            '${Vision}',
-            '${Weapon}',
-            '${Affiliation}',
-            '${Birthday}',
-            '${Region}',
-            '${Constellation}',
-            '${Active}'
-            )
-            `, (error) => {if (error) throw error})
+            Active], (error) => {if (error) throw error})
 
         if (result.affectedRows ===0){ //En caso de no haber registros lo informamos
             res.status(400).json({msg: `No se pudo agregar el Personaje`})
@@ -211,7 +198,7 @@ const updatecharacterbyID = async (req = request, res = response) =>{
                 Weapon = '${Weapon}',
                 Affiliation = '${Affiliation}',
                 Birthday = '${Birthday}',
-                Region = '${Region}}',
+                Region = '${Region}',
                 Constellation = '${Constellation}',
                 Active = '${Active}'
                 WHERE ID = ${id}`, (error) => {if (error) throw error})
